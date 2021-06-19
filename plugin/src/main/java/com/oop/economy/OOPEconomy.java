@@ -10,6 +10,7 @@ import com.oop.economy.config.Configurations;
 import com.oop.economy.config.database.DatabaseCredentials;
 import com.oop.economy.database.DatabaseController;
 import com.oop.economy.database.DatabaseLibraryManager;
+import com.oop.economy.event.PlayerEvents;
 import com.oop.economy.language.LanguageController;
 import com.oop.economy.model.account.EconomyAccounts;
 import com.oop.economy.util.Schedulers;
@@ -52,11 +53,18 @@ public class OOPEconomy extends JavaPlugin implements PlatformStarter<OOPEconomy
       // Initialize database stuff
       initDatabase();
 
+      // Initialize events
+      initEvents();
+
       registerModule(new CommandController());
     } catch (Throwable throwable) {
       Bukkit.getPluginManager().disablePlugin(this);
       new IllegalStateException("Error while loading plugin", throwable).printStackTrace();
     }
+  }
+
+  private void initEvents() {
+    new PlayerEvents();
   }
 
   public void initDatabase() {
@@ -74,7 +82,7 @@ public class OOPEconomy extends JavaPlugin implements PlatformStarter<OOPEconomy
       DatabaseController databaseController = new DatabaseController();
       registerModule(databaseController);
 
-      new EconomyAccounts(databaseController);
+      registerModule(new EconomyAccounts(databaseController));
 
       // Test db connection
       DatabaseCredentials databaseCredentials =
@@ -97,6 +105,7 @@ public class OOPEconomy extends JavaPlugin implements PlatformStarter<OOPEconomy
   @Override
   public void onDisable() {
     platform().onDisable();
+    StorageInitializer.getInstance().onDisable();
   }
 
   protected void initConfigurations() {

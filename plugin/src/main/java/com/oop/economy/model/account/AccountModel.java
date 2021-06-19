@@ -8,6 +8,9 @@ import com.oop.economy.util.number.NumberUtil;
 import com.oop.economy.util.number.NumberWrapper;
 import com.oop.inteliframework.plugin.module.InteliModule;
 import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,6 +20,7 @@ public class AccountModel implements UniversalBodyModel, InteliModule {
   private final ReentrantLock writeLock = new ReentrantLock();
   @Getter private UUID uuid;
   @Getter private NumberWrapper balance;
+  @Getter @Setter private Player onlinePlayer;
 
   protected AccountModel() {}
 
@@ -54,7 +58,7 @@ public class AccountModel implements UniversalBodyModel, InteliModule {
     try {
       writeLock.lock();
       this.balance = modifier.apply(balance);
-      if (NumberWrapper.of(0).isLessThan(balance)) {
+      if (balance.isLessThan(NumberWrapper.of(0))) {
         this.balance = NumberWrapper.of(0);
       }
     } finally {
@@ -68,6 +72,8 @@ public class AccountModel implements UniversalBodyModel, InteliModule {
   public void deserialize(SerializedData data) {
     this.uuid = FastUUID.parseUUID(data.applyAs("uuid"));
     this.balance = NumberWrapper.of(NumberUtil.formattedToBigDecimal(data.applyAs("balance")));
+
+    onlinePlayer = Bukkit.getPlayer(uuid);
   }
 
   @Override

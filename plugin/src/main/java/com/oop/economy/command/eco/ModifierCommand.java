@@ -41,17 +41,17 @@ public class ModifierCommand {
     command.labeled(label);
 
     command.addChild(
-        Arguments.numberWrapperArg().addChild(new NoValueArgument().labeled("--silent")));
+        Arguments.numberWrapperArg().labeled("amount").addChild(new NoValueArgument().labeled("--silent")));
 
     command.filters().add("permission", BukkitRequirements.permission(permission));
     command.onExecute(
         (executor, data) -> {
-          Arguments.OfflineTargetsMatch targetsMatch =
-              data.getAs("targets", Arguments.OfflineTargetsMatch.class);
-          NumberWrapper number = data.getAs("number", NumberWrapper.class);
+          Arguments.TargetMatches targetsMatch =
+              data.getAs("targets", Arguments.TargetMatches.class);
+          NumberWrapper number = data.getAs("amount", NumberWrapper.class);
 
           Replacer replacer = new Replacer();
-          replacer.replaceLiteral("%target%", targetsMatch.getIdentifier());
+          replacer.replaceLiteral("%target%", targetsMatch.getInput());
           replacer.replaceLiteral("%amount_formatted%", number.formatWithSuffixes());
 
           if (!executor.isConsole()) {

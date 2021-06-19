@@ -27,8 +27,7 @@ public class LanguageController implements NameableModule, LoadableModule {
 
     final Map<String, Language> languageKeys = new HashMap<>();
     for (Language language : Language.values()) {
-      languageKeys.put(
-          StringUtils.replace(language.name().toLowerCase(Locale.ROOT), "_", "."), language);
+      languageKeys.put(language.getConfigKey(), language);
     }
 
     // Remove not existent language keys

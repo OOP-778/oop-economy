@@ -9,6 +9,7 @@ import com.oop.inteliframework.config.node.BaseValueNode;
 import com.oop.inteliframework.config.node.api.Node;
 import com.oop.inteliframework.config.property.property.SerializedProperty;
 import com.oop.inteliframework.config.property.property.custom.PropertyHandler;
+import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -39,27 +40,27 @@ public class NumberWrapper {
     return Optional.of(wrapper);
   }
 
-  public boolean isMoreOrEquals(NumberWrapper to) {
+  public boolean isMoreOrEquals(@NonNull NumberWrapper to) {
     int i = compareTo(to);
     return i >= 0;
   }
 
-  public boolean isLessOrEquals(NumberWrapper to) {
+  public boolean isLessOrEquals(@NonNull NumberWrapper to) {
     int i = compareTo(to);
     return i <= 0;
   }
 
-  public boolean equals(NumberWrapper to) {
+  public boolean equals(@NonNull NumberWrapper to) {
     int i = compareTo(to);
     return i == 0;
   }
 
-  public boolean isMoreThan(NumberWrapper to) {
+  public boolean isMoreThan(@NonNull NumberWrapper to) {
     int i = compareTo(to);
     return i > 0;
   }
 
-  public boolean isLessThan(NumberWrapper to) {
+  public boolean isLessThan(@NonNull NumberWrapper to) {
     int i = compareTo(to);
     return i < 0;
   }
@@ -91,6 +92,14 @@ public class NumberWrapper {
   public NumberWrapper add(Number number) {
     return NumberWrapper.of(
         Helper.normalize(toBigDecimal().add(Helper.convertToBigDecimal(number))));
+  }
+
+  public NumberWrapper add(NumberWrapper number) {
+    return add(number.toNumber());
+  }
+
+  public NumberWrapper remove(NumberWrapper number) {
+    return remove(number.toNumber());
   }
 
   public NumberWrapper remove(Number number) {
@@ -140,7 +149,7 @@ public class NumberWrapper {
   }
 
   public int compareTo(NumberWrapper o) {
-    return o.toBigDecimal().compareTo(toBigDecimal());
+    return toBigDecimal().compareTo(o.toBigDecimal());
   }
 
   private static class Helper {
@@ -261,5 +270,4 @@ public class NumberWrapper {
       return NumberWrapper.class;
     }
   }
-
 }
